@@ -67,7 +67,7 @@
     <Folder Include="Sounds\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Character\NewPointer.png">
+    <Compile Include="Ship\NewPointer.png">
       <Name>NewPointer</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -90,6 +90,52 @@
   <ItemGroup>
     <Compile Include="Testing\Pomru_StrawberryCakeHealth.png">
       <Name>Pomru_StrawberryCakeHealth</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Guns\Bullets\bulletshot.png">
+      <Name>bulletshot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Guns\Bullets\lasershot.png">
+      <Name>lasershot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Guns\Muzzle\lasserball.png">
+      <Name>lasserball</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Guns\Muzzle\muzzleflare.png">
+      <Name>muzzleflare</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Guns\Muzzle\plasmaEww.png">
+      <Name>plasmaEww</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Guns\Bullets\plasmashot.png">
+      <Name>plasmashot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Ship\defaultDrone.png">
+      <Name>defaultDrone</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Guns\bulletpistol.png">
+      <Name>bulletpistol</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

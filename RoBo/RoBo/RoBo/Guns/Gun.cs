@@ -10,14 +10,16 @@ using Microsoft.Xna.Framework.Input;
 
 namespace RoBo
 {
-    public abstract class Gun
+    public abstract class Gun : RotatingSprite
     {
         Input input = new Input();
+        private Vector2 offset;
 
         protected List<Bullet> bulls;
 
         private float fireTimer, reloadTimer;
         private bool isReloading, isAutomatic;
+        private bool isShooting;
 
         public Character Character
         {
@@ -126,9 +128,16 @@ namespace RoBo
             protected set;
         }
 
-        public Gun(Character character, int damage, float accuracy, float reloadSpd, float fireRate, float range,
-            int ammoCap, int MagSize, int numShots = 1, bool isAutomatic = true)
+        public Gun(Character character,Texture2D texture, float scaleFactor, int damage, float accuracy, float reloadSpd, float fireRate, float range,
+            int ammoCap, int MagSize, int numShots = 1, bool isAutomatic = true, bool isSmallArms = true)
+            : base(texture, scaleFactor, 10, Vector2.Zero)
         {
+            if (!isSmallArms)
+                offset = new Vector2(character.Rec.Width * 0.30f, character.Rec.Height * 0.001f);
+            else
+                offset = new Vector2(character.Rec.Width * 0.17f, character.Rec.Height * -0.1f);
+
+
             bulls = new List<Bullet>();
             this.Character = character;
 
@@ -141,16 +150,30 @@ namespace RoBo
             this.ReloadSpd = reloadSpd;
             this.FireRate = fireRate;
             
-
             this.CurrMag = this.MagSize = MagSize;
             this.CurAmmo = this.MaxAmmo = ammoCap;
 
             fireTimer = 1 / FireRate;
         }
 
-        public virtual void update(GameTime gameTime, IStage stage)
+        public override void update(GameTime gameTime, IStage stage)
         {
             input.start();
+
+            //Recoil animation
+            Matrix myRotationMatrix = Matrix.CreateRotationZ(Character.Rotation);
+            Vector2 rotatedVector = Vector2.Transform(offset, myRotationMatrix);
+            Vector2 desiredVec = Character.Position + rotatedVector;           
+
+            if ((desiredVec - Position).Length() >= Rec.Width * 0.001f)
+            {
+                this.Velocity = desiredVec - Position;
+                this.Velocity.Normalize();
+                this.Velocity *= (Speed != 0) ? Speed : 1;
+            }
+
+            this.Position += Velocity;
+            this.Rotation = Character.Rotation;            
 
             //if the player wants to reload
             if (input.ReloadPressed)
@@ -159,6 +182,7 @@ namespace RoBo
                     isReloading = true;
             }
 
+            isShooting = false;
             //if (not reloading and you have ammo in the Mag)
             if (!isReloading && CurrMag > 0)
             {
@@ -169,12 +193,14 @@ namespace RoBo
                 {
                     if (isAutomatic && input.LeftClick)
                     {
+                        isShooting = true;
                         shoot(gameTime);
                         CurrMag--;
                         fireTimer = 0;                        
                     }
                     else if (input.LeftClickPressed)
                     {
+                        isShooting = true;
                         shoot(gameTime);
                         CurrMag--;
                         fireTimer = 0;                        
@@ -226,29 +252,63 @@ namespace RoBo
             input.end();
         }
 
-        public virtual void draw(SpriteBatch spriteBatch)
+        public override void draw(SpriteBatch spriteBatch)
         {
+            //Draw bullets
             foreach (Bullet bull in bulls)
                 bull.draw(spriteBatch);
 
+            //Draw Muzzle flare
+            RotatingSprite muzzleFire = new RotatingSprite(Image.Muzzle.Physical, 0.05f, 0, Vector2.Zero, this.Rotation);
 
+            Vector2 offset = new Vector2(this.Position.X, (int)(this.Position.Y - muzzleFire.Rec.Height * 0.28f - this.Rec.Height / 2));
+            Matrix myRotationMatrix = Matrix.CreateRotationZ(this.Rotation);
+            offset = Vector2.Transform(offset - this.Position, myRotationMatrix) + this.Position;
+
+            muzzleFire = new RotatingSprite(Image.Muzzle.Physical, 0.05f, 0, offset, this.Rotation);
+
+            if (isShooting)
+                muzzleFire.draw(spriteBatch);
+
+            //Draw Ammo count
             Vector2 ammoPos = Character.Position + new Vector2(Character.Speed * 10, Character.Speed * 10);
             spriteBatch.DrawString(Fonts.Normal, "" + CurrMag + "/" + CurAmmo, ammoPos, Color.White);
 
+            //Draw Reload time
             if (reloadTimer > 0)
             {
                 Vector2 reloadPos = Character.Position + new Vector2(-Character.Speed * 10, Character.Speed * 10);
                 spriteBatch.DrawString(Fonts.Normal, reloadTimer.ToString("0.0"), reloadPos, Color.Red);
             }
+
+            //Draw Gun
+            base.draw(spriteBatch);
         }
 
-        public virtual void shoot(GameTime gameTime)
+        private Vector2 rotate(Vector2 displacemnet)
+        {
+            Matrix myRotationMatrix = Matrix.CreateRotationZ(Character.Rotation);
+
+            Vector2 moveVec = Vector2.Transform(displacemnet, myRotationMatrix);
+
+            return moveVec;
+        }
+
+        public void Clear()
+        {
+            bulls.Clear();
+        }
+        
+        protected virtual void shoot(GameTime gameTime)
         {
             for (int i = 0; i < NumShots; i++)
+            {
                 bulls.Add(new Shot(this));
+                this.Position += rotate(new Vector2(0, 1) * Speed * 2);//recoil
+            }
         }
 
-        public virtual void reloading(float reloadTime)
+        protected virtual void reloading(float reloadTime)
         {
         }
     }

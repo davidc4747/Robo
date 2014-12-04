@@ -33,8 +33,13 @@ namespace RoBo
         }
 
         public Bullet(Texture2D texture, float scaleFactor, float secondsToCrossScreen, Gun gun)
-            : base(texture, scaleFactor, secondsToCrossScreen, gun.Character.Position)
+            : base(texture, scaleFactor, secondsToCrossScreen, Vector2.Zero)
         {
+
+            Vector2 offset = new Vector2(gun.Position.X, (int)(gun.Position.Y - gun.Rec.Height / 2));
+            Matrix myRotationMatrix = Matrix.CreateRotationZ(gun.Rotation);
+            this.Position = Vector2.Transform(offset - gun.Position, myRotationMatrix) + gun.Position;
+            
             const int MAX_INACCURACY = 1;//radians
             double acurracyRange = MAX_INACCURACY * (1 - gun.Accuracy);
 

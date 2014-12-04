@@ -17,25 +17,57 @@ namespace RoBo
         }
 
         //Character Imgs
-        public class Character
+        public class Ship
         {
             public static Texture2D Starter
             {
-                get { return Game1.GameContent.Load<Texture2D>("Character/NewPointer"); }
+                get { return Game1.GameContent.Load<Texture2D>("Ship/defaultDrone"); }
             }
         }
 
         //Gun Imgs
         public class Gun
         {
+            public static Texture2D PhysPistol
+            {
+                get { return Game1.GameContent.Load<Texture2D>("Guns/bulletpistol"); }
+            }
         }
 
         //Bulet Imgs
         public class Bullet
         {
-            public static Texture2D Normal
+            public static Texture2D Physical
             {
-                get { return Game1.GameContent.Load<Texture2D>("Guns/Bullets/bullet"); }
+                get { return Game1.GameContent.Load<Texture2D>("Guns/Bullets/bulletshot"); }
+            }
+
+            public static Texture2D Plasma
+            {
+                get { return Game1.GameContent.Load<Texture2D>("Guns/Bullets/plasmashot"); }
+            }
+
+            public static Texture2D Laser
+            {
+                get { return Game1.GameContent.Load<Texture2D>("Guns/Bullets/lasershot"); }
+            }
+        }
+
+        public class Muzzle
+        {
+            public static Texture2D Physical
+            {
+                get { return Game1.GameContent.Load<Texture2D>("Guns/Muzzle/muzzleflare"); }
+            }
+
+            public static Texture2D Plasma
+            {
+                get { return Game1.GameContent.Load<Texture2D>("Guns/Muzzle/plasmaEww"); }
+            }
+
+            public static Texture2D Laser
+            {
+                get { return Game1.GameContent.Load<Texture2D>("Guns/Muzzle/lasserball"); }
             }
         }
 

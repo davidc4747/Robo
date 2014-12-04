@@ -16,6 +16,9 @@ namespace RoBo
 
         Vector2 mousePos;
 
+        bool isSwaping;
+        float swapTimer = 0;
+
         int gunIndex;
         Inventory invent;
         List<Gun> guns;        
@@ -48,7 +51,7 @@ namespace RoBo
         }
 
         public Character()
-            : base(Image.Character.Starter, 0.05f, 2.5f, Vector2.Zero)
+            : base(Image.Ship.Starter, 0.14f, 2.5f, Vector2.Zero)
         {
             guns = new List<Gun>();
             guns.Add(new Pistol(this));
@@ -72,14 +75,28 @@ namespace RoBo
 
             //Movement
             this.Position += this.velocity;
-            velocity = Vector2.Zero;
+            velocity = velocity * 0.90f;
 
             //Wep Swap
             if (input.SwapActDown || input.DeltaWheelValue < 0)            
                 gunIndex = (gunIndex - 1 < 0) ? guns.Count - 1 : gunIndex - 1;            
             else if (input.SwapActUp || input.DeltaWheelValue > 0)            
                 gunIndex = (gunIndex + 1) % guns.Count;
-            CurGun = guns[gunIndex];
+            
+            //Small Delay between switching weapons
+            if (CurGun != guns[gunIndex])
+            {
+                isSwaping = true;
+                swapTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (swapTimer >= 0.3f)
+                {
+                    CurGun.Clear();
+                    CurGun = guns[gunIndex];
+                    swapTimer = 0;
+                    isSwaping = false;
+                }
+
+            }
 
             //Check for Movment
             if (input.Right && this.Position.X < stage.Rec.Width)             
@@ -102,7 +119,8 @@ namespace RoBo
                     invent.add(item);
 
             //update aggregate classes
-            CurGun.update(gameTime, stage);
+            if (!isSwaping)
+                CurGun.update(gameTime, stage);
             hud.update(gameTime);
             
             input.end();
@@ -110,13 +128,12 @@ namespace RoBo
 
         public override void draw(SpriteBatch spriteBatch)
         {
+            if (!isSwaping)
+                CurGun.draw(spriteBatch);
             base.draw(spriteBatch);
-
-            spriteBatch.Draw(Image.Particle, new Rectangle((int)mousePos.X, (int)mousePos.Y, 3, 3), Color.Red);
-
-            CurGun.draw(spriteBatch);
             hud.draw(spriteBatch);
-            
+
+            spriteBatch.Draw(Image.Particle, new Rectangle((int)mousePos.X, (int)mousePos.Y, 3, 3), Color.Red);            
         }
     }
 }

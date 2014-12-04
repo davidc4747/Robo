@@ -75,7 +75,7 @@ namespace RoBo
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            camera.Focus = stage.Character.Center;
+            camera.Focus = stage.Character.Position;
             camera.MoveSpeed = stage.Character.Speed;
 
             stage.update(gameTime);

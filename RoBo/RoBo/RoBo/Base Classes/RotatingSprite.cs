@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RoBo
 {
-    public abstract class RotatingSprite : BaseSprite
+    public class RotatingSprite : BaseSprite
     {
         public float Rotation
         {
@@ -23,12 +23,12 @@ namespace RoBo
             get { return origin; }
         }
 
-        public RotatingSprite(Texture2D texture, float scaleFactor, float secondsToCrossScreen, Vector2 startPos)
+        public RotatingSprite(Texture2D texture, float scaleFactor, float secondsToCrossScreen, Vector2 startPos, float rotation = 0f)
             : base(texture, scaleFactor, secondsToCrossScreen, startPos)
         {
             origin.X = texture.Width / 2;
             origin.Y = texture.Height / 2;
-            Rotation = 0f;
+            Rotation = rotation;
         }
 
         public override void draw(SpriteBatch spriteBatch)
