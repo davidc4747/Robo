@@ -18,7 +18,6 @@ namespace RoBo
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
         
         Camera2D camera;
         Stage stage;
@@ -93,10 +92,7 @@ namespace RoBo
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.Default, rs, null, camera.Transform);
 
-
             stage.draw(spriteBatch);
-
-
 
             spriteBatch.End();
 

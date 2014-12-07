@@ -7,6 +7,11 @@ namespace RoBo
 {
     public enum GameState
     {
-        PAUSE, MAINMENU, PLAYING
+        START_MENU, PAUSE, PLAYING
+    }
+
+    public enum WeaponType
+    {
+        PISTOL, SHOTGUN, SNIPER, ASSAULT, SMG, LMG
     }
 }

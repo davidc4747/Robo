@@ -56,6 +56,8 @@ namespace RoBo
             guns = new List<Gun>();
             guns.Add(new Pistol(this));
             guns.Add(new Shotgun(this));
+            guns.Add(new LaserPistol(this));
+            guns.Add(new PlasmaPistol(this));
 
             CurGun = guns[0]; 
             hud = new Hud(this);
@@ -72,11 +74,7 @@ namespace RoBo
 
             Vector2 lookVek = mousePos - this.Position;
             Rotation = (float)Math.Atan2(lookVek.X, -lookVek.Y);
-
-            //Movement
-            this.Position += this.velocity;
-            velocity = velocity * 0.90f;
-
+            
             //Wep Swap
             if (input.SwapActDown || input.DeltaWheelValue < 0)            
                 gunIndex = (gunIndex - 1 < 0) ? guns.Count - 1 : gunIndex - 1;            
@@ -95,8 +93,9 @@ namespace RoBo
                     swapTimer = 0;
                     isSwaping = false;
                 }
-
             }
+            else
+                isSwaping = false;
 
             //Check for Movment
             if (input.Right && this.Position.X < stage.Rec.Width)             
@@ -107,6 +106,10 @@ namespace RoBo
                 velocity.Y = -this.Speed;            
             if (input.Down && this.Position.Y < stage.Rec.Height)            
                 velocity.Y = this.Speed;
+            
+            //Movement
+            this.Position += this.velocity;
+            velocity = velocity * 0.90f;
 
             //Check Collision
             FutureRec = new Rectangle((int)(Position.X + velocity.X), (int)(Position.Y + velocity.Y), Rec.Width, Rec.Height);
@@ -118,10 +121,10 @@ namespace RoBo
                 if (isColliding(item))
                     invent.add(item);
 
-            //update aggregate classes
-            if (!isSwaping)
-                CurGun.update(gameTime, stage);
+            //update aggregate classes            
             hud.update(gameTime);
+            foreach (Gun gun in guns)
+                gun.update(gameTime, stage);
             
             input.end();
         }

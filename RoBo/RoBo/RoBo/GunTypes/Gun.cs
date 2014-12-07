@@ -13,13 +13,18 @@ namespace RoBo
     public abstract class Gun : RotatingSprite
     {
         Input input = new Input();
+        WeaponType wepType;
+
         private Vector2 offset;
+
+        protected RotatingSprite muzzleFlare;
+        protected Vector2 muzzleOffset;
 
         protected List<Bullet> bulls;
 
         private float fireTimer, reloadTimer;
-        private bool isReloading, isAutomatic;
-        private bool isShooting;
+        protected bool isReloading, isShooting;
+        private bool isAutomatic;
 
         public Character Character
         {
@@ -31,9 +36,15 @@ namespace RoBo
         {
             get { return bulls.ToArray(); }
         }
-
-
+        
         //Gun Stats--------------
+        #region Gun Stats
+
+        public string Name
+        {
+            get;
+            protected set;
+        }
 
         private int maxAmmo;
         public int MaxAmmo
@@ -128,16 +139,22 @@ namespace RoBo
             protected set;
         }
 
+        #endregion
+
         public Gun(Character character,Texture2D texture, float scaleFactor, int damage, float accuracy, float reloadSpd, float fireRate, float range,
             int ammoCap, int MagSize, int numShots = 1, bool isAutomatic = true, bool isSmallArms = true)
             : base(texture, scaleFactor, 10, Vector2.Zero)
         {
             if (!isSmallArms)
-                offset = new Vector2(character.Rec.Width * 0.30f, character.Rec.Height * 0.001f);
+                offset = new Vector2(character.Rec.Width * 0.33f, character.Rec.Height * 0.001f);
             else
-                offset = new Vector2(character.Rec.Width * 0.17f, character.Rec.Height * -0.1f);
+                offset = new Vector2(character.Rec.Width * 0.20f, character.Rec.Height * -0.12f);
 
+            this.Position = character.Position;
+            muzzleFlare = new RotatingSprite(Image.Muzzle.Physical, 0.05f, 0, Vector2.Zero, this.Rotation);
+            muzzleOffset = new Vector2(this.Position.X, (int)(this.Position.Y - muzzleFlare.Rec.Height * 0.28f - this.Rec.Height / 2));
 
+            Name = "";
             bulls = new List<Bullet>();
             this.Character = character;
 
@@ -156,8 +173,29 @@ namespace RoBo
             fireTimer = 1 / FireRate;
         }
 
-        public override void update(GameTime gameTime, IStage stage)
+        public sealed override void update(GameTime gameTime, IStage stage)
         {
+            //Update or remove bullets
+            int i = 0;
+            while (i < bulls.Count)
+            {
+                if (bulls[i].Enabled)
+                    bulls[i].update(gameTime, stage);
+                else
+                {
+                    bulls.RemoveAt(i);
+                    i--;
+                }
+                i += 1;
+            }
+
+            //if(the gun isn't equipt) : Only update the bullets 
+            if (Character.CurGun != this)
+            {
+                standBy(gameTime, stage);
+                return;
+            }
+
             input.start();
 
             //Recoil animation
@@ -169,7 +207,7 @@ namespace RoBo
             {
                 this.Velocity = desiredVec - Position;
                 this.Velocity.Normalize();
-                this.Velocity *= (Speed != 0) ? Speed : 1;
+                this.Velocity *= (Speed != 0) ? Speed : 1.0f;
             }
 
             this.Position += Velocity;
@@ -186,7 +224,7 @@ namespace RoBo
             //if (not reloading and you have ammo in the Mag)
             if (!isReloading && CurrMag > 0)
             {
-                //Shoot if fireRate allows itS
+                //Shoot if fireRate allows it
                 reloadTimer = 0;
                 fireTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 if (fireTimer >= 1 / FireRate)
@@ -196,7 +234,7 @@ namespace RoBo
                         isShooting = true;
                         shoot(gameTime);
                         CurrMag--;
-                        fireTimer = 0;                        
+                        fireTimer = 0;
                     }
                     else if (input.LeftClickPressed)
                     {
@@ -209,45 +247,16 @@ namespace RoBo
             }
             else if (CurAmmo > 0)//if(reloading and you have ammo in your bag)
             {
-                //Reload after ReloadSpd has passed
-                fireTimer = 1 / FireRate;
-                reloading(reloadTimer);
+                fireTimer = 1 / FireRate;                
                 reloadTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (reloadTimer >= ReloadSpd)
-                {
-                    int ammoNeeded = MagSize - CurrMag;
-
-                    if (CurAmmo >= ammoNeeded)
-                    {
-                        CurrMag = MagSize;
-                        CurAmmo -= ammoNeeded;
-                    }
-                    else
-                    {
-                        CurrMag += CurAmmo;
-                        CurAmmo = 0;
-                    }
-
-                    isReloading = false;
-                }
+                reloading(reloadTimer);                
             }
             else
                 isReloading = false;
 
-
-            //Update or remove bullets
-            int i = 0;
-            while (i < bulls.Count)
-            {
-                if (bulls[i].Enabled)
-                    bulls[i].update(gameTime, stage);
-                else
-                {
-                    bulls.RemoveAt(i);
-                    i--;
-                }
-                i += 1;
-            }
+            if (!isReloading && !isShooting)
+                idle(gameTime, stage);
+                       
 
             input.end();
         }
@@ -259,16 +268,13 @@ namespace RoBo
                 bull.draw(spriteBatch);
 
             //Draw Muzzle flare
-            RotatingSprite muzzleFire = new RotatingSprite(Image.Muzzle.Physical, 0.05f, 0, Vector2.Zero, this.Rotation);
-
-            Vector2 offset = new Vector2(this.Position.X, (int)(this.Position.Y - muzzleFire.Rec.Height * 0.28f - this.Rec.Height / 2));
             Matrix myRotationMatrix = Matrix.CreateRotationZ(this.Rotation);
-            offset = Vector2.Transform(offset - this.Position, myRotationMatrix) + this.Position;
+            Vector2 muzzPos = Vector2.Transform(muzzleOffset, myRotationMatrix) + this.Position;
 
-            muzzleFire = new RotatingSprite(Image.Muzzle.Physical, 0.05f, 0, offset, this.Rotation);
+            muzzleFlare = new RotatingSprite(muzzleFlare.Texture, muzzleFlare.ScaleFactor, 0, muzzPos, this.Rotation);
 
             if (isShooting)
-                muzzleFire.draw(spriteBatch);
+                muzzleFlare.draw(spriteBatch);
 
             //Draw Ammo count
             Vector2 ammoPos = Character.Position + new Vector2(Character.Speed * 10, Character.Speed * 10);
@@ -285,31 +291,67 @@ namespace RoBo
             base.draw(spriteBatch);
         }
 
-        private Vector2 rotate(Vector2 displacemnet)
+        protected virtual void standBy(GameTime gameTime, IStage stage)
         {
-            Matrix myRotationMatrix = Matrix.CreateRotationZ(Character.Rotation);
-
-            Vector2 moveVec = Vector2.Transform(displacemnet, myRotationMatrix);
-
-            return moveVec;
         }
 
-        public void Clear()
+        protected virtual void idle(GameTime gameTime, IStage stage)
         {
-            bulls.Clear();
         }
         
         protected virtual void shoot(GameTime gameTime)
         {
             for (int i = 0; i < NumShots; i++)
             {
-                bulls.Add(new Shot(this));
+                bulls.Add(getBullet());
                 this.Position += rotate(new Vector2(0, 1) * Speed * 2);//recoil
             }
         }
 
-        protected virtual void reloading(float reloadTime)
+        protected virtual void reloading(float reloadTimer)
         {
+            //Reload after ReloadSpd has passed
+            if (reloadTimer >= ReloadSpd)
+            {
+                int ammoNeeded = MagSize - CurrMag;
+
+                if (CurAmmo >= ammoNeeded)
+                {
+                    CurrMag = MagSize;
+                    CurAmmo -= ammoNeeded;
+                }
+                else
+                {
+                    CurrMag += CurAmmo;
+                    CurAmmo = 0;
+                }
+
+                isReloading = false;
+            }
         }
+
+        //------
+
+        protected Vector2 rotate(Vector2 displacemnet)
+        {
+            Matrix myRotationMatrix = Matrix.CreateRotationZ(Character.Rotation);
+            Vector2 moveVec = Vector2.Transform(displacemnet, myRotationMatrix);
+            return moveVec;
+        }
+
+        protected virtual Bullet getBullet()
+        {
+            return new Shot(this);
+        }
+
+        public void Clear()
+        {
+            //bulls.Clear();
+            isReloading = false;
+            isShooting = false;
+            fireTimer = 0;
+            reloadTimer = 0;
+        }
+
     }
 }

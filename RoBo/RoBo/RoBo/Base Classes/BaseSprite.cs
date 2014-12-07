@@ -46,6 +46,11 @@ namespace RoBo
             }
         }
 
+        public Texture2D Texture
+        {
+            get { return texture; }
+        }
+
         public Vector2 Center
         {
             get { return new Vector2(Rec.Center.X, Rec.Center.Y); }
