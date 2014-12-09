@@ -12,7 +12,7 @@ namespace RoBo
     public abstract class Bullet : RotatingSprite
     {
         protected float disTraveled;
-        private static int randCount = 0;
+        private static Random inAccGen = new Random();
 
         public bool Enabled
         {
@@ -43,8 +43,8 @@ namespace RoBo
             const int MAX_INACCURACY = 1;//radians
             double acurracyRange = MAX_INACCURACY * (1 - gun.Accuracy);
 
-            randCount++;
-            Random inAccGen = new Random(randCount);
+            //randCount++;
+            //Random inAccGen = new Random(randCount);
             float randNum = (float)(acurracyRange * 2 * inAccGen.NextDouble() - acurracyRange);
 
             //Set velocity and rotation

@@ -29,6 +29,7 @@ namespace RoBo
     public interface IStage : IMap
     {
         Item[] Items { get; }
+        Floor[] Floors { get; }
     }
 
     public abstract class Stage : IStage
@@ -37,7 +38,8 @@ namespace RoBo
         public Color Color { get; protected set; }
         public Texture2D Background { get; protected set; }
         public Rectangle Rec { get; protected set; }
-
+        
+        protected List<Floor> floors;
         protected List<Item> items;
         protected List<Object> objs;
         protected List<Enemy> enemies;
@@ -59,6 +61,11 @@ namespace RoBo
             }
         }
 
+        public Floor[] Floors
+        {
+            get { return floors.ToArray(); }
+        }
+
         public Item[] Items
         {
             get { return items.ToArray(); }
@@ -77,14 +84,17 @@ namespace RoBo
         public Stage()
         {
             Background = Image.Particle;
-            Rec = new Rectangle(0, 0, Game1.View.Width*2, Game1.View.Height*2);
-            Color = Color.White;
+            Rec = new Rectangle(0, 0, Game1.View.Width*10, Game1.View.Height*10);
+            Color = Color.Black;
 
+            floors = new List<Floor>();
             items = new List<Item>();
             objs = new List<Object>();
             enemies = new List<Enemy>();
 
             Character = new Character();
+
+            generateDungeon();
         }
 
         public virtual void update(GameTime gameTime)
@@ -139,7 +149,10 @@ namespace RoBo
         public virtual void draw(SpriteBatch spriteBatch)
         {
             if (Background != null)
-                spriteBatch.Draw(Background, Rec, new Color(0,0,0));
+                spriteBatch.Draw(Background, Rec, Color.Purple);
+
+            foreach (Floor floor in floors)
+                floor.draw(spriteBatch);
 
             foreach (Object obj in Objects)
                 obj.draw(spriteBatch);
@@ -166,7 +179,31 @@ namespace RoBo
                 spawnTimer = 0;
             }
         }
+        
+        private void generateDungeon()
+        {
+            List<Floor> corridors = new List<Floor>();
+            floors.Add(new Room(this));
+            for (int i = 1; i < 20; i++)
+            {
+                bool isIntersecting;
+                Room room;
+                do
+                {
+                    room = new Room(this);
+                    isIntersecting = false;
+                    foreach (Floor floor in floors)
+                        if (room.isColliding(floor))
+                            isIntersecting = true;
+                }
+                while (isIntersecting);
 
+                floors.Add(room);
+                corridors.Add(new Corridor(this, floors[i - 1], floors[i]));
+            }
+
+            floors.AddRange(corridors);
+        }
 
     }
 }

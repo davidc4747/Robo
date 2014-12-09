@@ -21,6 +21,7 @@ namespace RoBo
         
         Camera2D camera;
         Stage stage;
+        MiniMap map;
 
         static ContentManager otherContent;
         public static ContentManager GameContent
@@ -51,6 +52,7 @@ namespace RoBo
             Components.Add(camera);
 
             stage = new Stage1();
+            map = new MiniMap(stage);
 
             base.Initialize();
         }
@@ -78,6 +80,7 @@ namespace RoBo
             camera.MoveSpeed = stage.Character.Speed;
 
             stage.update(gameTime);
+            map.update(gameTime);
 
             base.Update(gameTime);
         }
@@ -94,6 +97,11 @@ namespace RoBo
 
             stage.draw(spriteBatch);
 
+            spriteBatch.End();
+
+            //Draw mini Map
+            spriteBatch.Begin();
+            map.draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

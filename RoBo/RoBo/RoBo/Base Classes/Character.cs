@@ -69,8 +69,8 @@ namespace RoBo
             input.start();
 
             //Calc Rotation
-            mousePos.X = input.MousePos.X + Center.X - Game1.View.Width / 2;
-            mousePos.Y = input.MousePos.Y + Center.Y - Game1.View.Height / 2;
+            mousePos.X = input.MousePos.X + Position.X - Game1.View.Width / 2;
+            mousePos.Y = input.MousePos.Y + Position.Y - Game1.View.Height / 2;
 
             Vector2 lookVek = mousePos - this.Position;
             Rotation = (float)Math.Atan2(lookVek.X, -lookVek.Y);
