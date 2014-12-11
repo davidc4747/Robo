@@ -20,8 +20,9 @@ namespace RoBo
         SpriteBatch spriteBatch;
         
         Camera2D camera;
+
         Stage stage;
-        MiniMap map;
+        Hud hud;
 
         static ContentManager otherContent;
         public static ContentManager GameContent
@@ -52,7 +53,7 @@ namespace RoBo
             Components.Add(camera);
 
             stage = new Stage1();
-            map = new MiniMap(stage);
+            hud = new Hud(stage);
 
             base.Initialize();
         }
@@ -61,13 +62,10 @@ namespace RoBo
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
         }
 
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
         }
 
         protected override void Update(GameTime gameTime)
@@ -80,7 +78,7 @@ namespace RoBo
             camera.MoveSpeed = stage.Character.Speed;
 
             stage.update(gameTime);
-            map.update(gameTime);
+            hud.update(gameTime);
 
             base.Update(gameTime);
         }
@@ -101,7 +99,7 @@ namespace RoBo
 
             //Draw mini Map
             spriteBatch.Begin();
-            map.draw(spriteBatch);
+            hud.draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

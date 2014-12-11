@@ -11,6 +11,12 @@ namespace RoBo
 {
     public abstract class Item : Object
     {
+        public string Name
+        {
+            get;
+            private set;
+        }
+
         public float DropRate
         {
             get;
@@ -23,19 +29,23 @@ namespace RoBo
             protected set;
         }
 
-        public Item(Texture2D texture, float scaleFactor, Vector2 startPos)
+        public Item(Texture2D texture, float scaleFactor, Vector2 startPos, string name = "")
             : base(texture, scaleFactor, 0, startPos)
         {
+            Quantity = 1;
+            Name = name;
         }
 
-        public override void update(GameTime gameTime, IStage Stage)
+        public override void update(GameTime gameTime, IStage stage)
         {
-            base.update(gameTime, Stage);
+            base.update(gameTime, stage);
 
-            if (isColliding(Stage.Character))
+            if (isColliding(stage.Character))
             {
                 this.IsDead = true;
-                Stage.Character.pickUp(this);
+                stage.Character.pickUp(this);
+
+                Stage.showMessage(this.Position, "+" + Quantity + " " + Name);
             }
         }
     }

@@ -44,7 +44,7 @@ namespace RoBo
         protected List<Object> objs;
         protected List<Enemy> enemies;
 
-        private List<Message> messages;
+        private static List<Message> messages;
 
         public Character Character
         {
@@ -155,10 +155,7 @@ namespace RoBo
                 {
                     if (enemies[i].Drop != null)
                         items.Add(enemies[i].Drop);
-
-                    int exp = Character.kill(enemies[i]);
-                    messages.Add(new Message(enemies[i].Position, "+" + exp + " Data"));
-
+                    Character.kill(enemies[i]);
                     enemies.RemoveAt(i);
                     i--;
                 }
@@ -231,5 +228,14 @@ namespace RoBo
             floors.AddRange(corridors);
         }
 
+        public static void showMessage(Vector2 pos, string mess, Color inColor)
+        {
+            messages.Add(new Message(pos, mess, inColor));
+        }
+
+        public static void showMessage(Vector2 pos, string mess)
+        {
+            messages.Add(new Message(pos, mess, Color.White));
+        }
     }
 }

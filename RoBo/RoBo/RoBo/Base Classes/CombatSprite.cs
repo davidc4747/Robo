@@ -20,16 +20,15 @@ namespace RoBo
             protected set;
         }
 
-        public int Exp
-        {
-            get;
-            protected set;
-        }
-
+        private int health;
         public int Health
         {
-            get;
-            protected set;
+            get { return health; }
+            protected set
+            {//Clamp value between MaxHealth and 0.0
+                health = (value > MaxHealth) ? MaxHealth : (value < 0) ? 0 : value;
+            }
+
         }
 
         public int MaxHealth
@@ -38,7 +37,7 @@ namespace RoBo
             protected set;
         }
 
-        public Gun CurGun
+        public Gun CurGun//TODO: move to RangedEnemy
         {
             get;
             protected set;
@@ -58,6 +57,7 @@ namespace RoBo
         public virtual void damage(Bullet bull)
         {
             Health -= bull.Damage;
+            Stage.showMessage(this.Position, bull.Damage.ToString(), Color.Red);
         }
 
     }

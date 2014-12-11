@@ -46,8 +46,8 @@ namespace RoBo
         {
             if (!IsDead)
             {
-                alpha -= 9;
-                color = new Color(256, 256, 256, alpha);
+                alpha -= 11;
+                color = new Color(color.R, color.G, color.B, alpha);
                 position += new Vector2(0, -0.35f) * speed;
                 IsDead = alpha <= 0;
             }

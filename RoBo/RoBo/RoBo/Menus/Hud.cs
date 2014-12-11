@@ -11,20 +11,25 @@ namespace RoBo
 {
     public class Hud
     {
-        Character character;
+        MiniMap map;
+        ExpBar expBar;
 
-        public Hud(Character character)
+        public Hud(IStage stage)
         {
-            this.character = character;
+            map = new MiniMap(stage);
+            expBar = new ExpBar(stage.Character);
         }
 
         public void update(GameTime gameTime)
         {
+            map.update(gameTime);
+            expBar.update(gameTime);
         }
 
         public void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(Fonts.Normal, character.Exp.ToString(), character.Position + new Vector2(-100, 0), Color.Green);
+            map.draw(spriteBatch);
+            expBar.draw(spriteBatch);
         }
     }
 }

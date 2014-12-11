@@ -21,8 +21,23 @@ namespace RoBo
 
         int gunIndex;
         Inventory invent;
-        List<Gun> guns;        
-        Hud hud;        
+        List<Gun> guns;
+        TracerHud hud;
+
+        private int exp;
+        public int Exp
+        {
+            get { return exp; }
+            protected set
+            {//Clamp value between MaxExp and 0.0
+                exp = (value > MaxExp) ? MaxExp : (value < 0) ? 0 : value;
+            }
+        }
+
+        public int MaxExp
+        {
+            get { return (int)(2 * Math.Pow(IQ, 2) + 256.5f); }
+        }
 
         public Character()
             : base(Image.Ship.Starter, 0.14f, 2.5f, Vector2.Zero)
@@ -34,7 +49,7 @@ namespace RoBo
             guns.Add(new PlasmaPistol(this));
 
             CurGun = guns[0]; 
-            hud = new Hud(this);
+            hud = new TracerHud(this);
             invent = new Inventory(this);
 
             //TODO: change based on skill, upgrades, and IQ
@@ -97,10 +112,10 @@ namespace RoBo
                     Velocity = Vector2.Zero;
                                     
             //update aggregate classes            
-            hud.update(gameTime);
+            hud.update(gameTime, stage);
             foreach (Gun gun in guns)
                 gun.update(gameTime, stage);
-            
+
             input.end();
         }
 
@@ -125,26 +140,29 @@ namespace RoBo
             Health -= ene.Strength;
         }
 
-        public int kill(Enemy ene)
+        public void kill(Enemy ene)
         {
             //Calc Exp gained
-            int expGaned = 1;
+            int expGaned = 100;
             Exp += expGaned;
 
             //Update level
-            int expNeeded = IQ * 100 + 2048;
-            if (Exp >= expNeeded)
+            if (Exp >= MaxExp)
             {
-                Exp = Exp % expNeeded;
+                Exp = Exp % MaxExp;
                 IQ += 2;
             }
-            return expGaned;
+
+            Stage.showMessage(ene.Position, "+" + expGaned + " Data");
         }
 
         public void pickUp(Item item)
         {
             //Send Item to appropriate class
-            invent.add(item);
+            if (item.GetType() == typeof(Salvage))
+                invent.add(item);
+            else if (item.GetType() == typeof(HealthPack))
+                Health += (int)(MaxHealth * 0.05f + 0.5f);
         }
     }
 }

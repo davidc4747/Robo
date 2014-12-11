@@ -9,10 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RoBo
 {
-    public class Salvage : Item
+    public class HealthPack : Item
     {
-        public Salvage(Vector2 startPos)
-            : base(Image.Object.Salvage, 0.037f, startPos, "Salvage")
+        public HealthPack(Vector2 startPos)
+            : base(Image.Object.HealthPack, 0.037f, startPos, "Health Pack")
         {
         }
     }

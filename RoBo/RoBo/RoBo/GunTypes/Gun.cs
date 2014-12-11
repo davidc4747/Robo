@@ -283,16 +283,14 @@ namespace RoBo
             if (isShooting)
                 muzzleFlare.draw(spriteBatch);
 
-            //Draw Ammo count
-            Vector2 ammoPos = Holder.Position + new Vector2(Holder.Speed * 10, Holder.Speed * 10);
-            spriteBatch.DrawString(Fonts.Normal, "" + CurrMag + "/" + CurAmmo, ammoPos, Color.White);
+            //Draw Ammo count or Reload timer
+            Vector2 ammoPos = Holder.Position + new Vector2(Holder.Rec.Width * 0.9f, Holder.Speed * 10);
+            if (reloadTimer > 0)            
+                spriteBatch.DrawString(Fonts.Normal, reloadTimer.ToString("0.0"), ammoPos, Color.Red);            
+            else            
+                spriteBatch.DrawString(Fonts.Normal, "" + CurrMag + "/" + CurAmmo, ammoPos, Color.White);
+            
 
-            //Draw Reload time
-            if (reloadTimer > 0)
-            {
-                Vector2 reloadPos = Holder.Position + new Vector2(-Holder.Speed * 10, Holder.Speed * 10);
-                spriteBatch.DrawString(Fonts.Normal, reloadTimer.ToString("0.0"), reloadPos, Color.Red);
-            }
 
             //Draw Gun
             base.draw(spriteBatch);
@@ -353,7 +351,6 @@ namespace RoBo
 
         public void Clear()
         {
-            //bulls.Clear();
             isReloading = false;
             isShooting = false;
             fireTimer = 0;

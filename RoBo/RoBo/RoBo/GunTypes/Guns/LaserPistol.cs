@@ -8,7 +8,7 @@ namespace RoBo
     public class LaserPistol : LaserGun
     {
         public LaserPistol(Character character)
-            : base(character, Image.Gun.PhysPistol, 0.035f, 2, 1.0f, 0.5f, 20, 300, 1, 128)
+            : base(character, Image.Gun.LasPistol, 0.019f, 3 * 10, 1.0f, 0.5f, 20, 300, 1, 128, 1, 3)
         {
         }
     }

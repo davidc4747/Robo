@@ -20,8 +20,8 @@ namespace RoBo
             this.stage = stage;
             float scaleFactor = 0.20f;
 
-            rec.X = (int)(Game1.View.Width * 0.05f);
-            rec.Y = (int)(Game1.View.Height * 0.05f);
+            rec.X = (int)(Game1.View.Width * 0.03f);
+            rec.Y = (int)(Game1.View.Height * 0.03f);
 
             rec.Width = (int)(Game1.View.Width * scaleFactor + 0.5f);
             float aspectRatio = (float)stage.Rec.Width / stage.Rec.Height;

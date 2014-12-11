@@ -62,7 +62,7 @@ namespace RoBo
             velocity.Y -= (int)(Speed * Math.Cos(Rotation));
 
             Range = gun.Range;
-            Damage = gun.Damage;
+            Damage = gun.Damage + inAccGen.Next(-gun.Damage / 4, gun.Damage / 4 + 1);
             Pierce = gun.Pierce;
             Enabled = true;
         }

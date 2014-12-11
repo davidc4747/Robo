@@ -51,6 +51,11 @@ namespace RoBo
             {
                 get { return Game1.GameContent.Load<Texture2D>("Guns/bulletpistol"); }
             }
+
+            public static Texture2D LasPistol
+            {
+                get { return Game1.GameContent.Load<Texture2D>("Guns/lasergun"); }
+            }
         }
 
         //Bulet Imgs
@@ -105,6 +110,11 @@ namespace RoBo
             public static Texture2D Salvage
             {
                 get { return Game1.GameContent.Load<Texture2D>("Testing/Pomru_StrawberryCakeHealth"); }
+            }
+
+            public static Texture2D HealthPack
+            {
+                get { return Game1.GameContent.Load<Texture2D>("Testing/Pomru_FishHealth"); }
             }
         }
 
