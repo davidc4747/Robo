@@ -25,6 +25,25 @@ namespace RoBo
             }
         }
 
+        //Hud Imgs
+        public class Hud
+        {
+            public static Texture2D HealthBar
+            {
+                get { return Game1.GameContent.Load<Texture2D>("Hud/healthbar"); }
+            }
+
+            public static Texture2D AmmoBar
+            {
+                get { return Game1.GameContent.Load<Texture2D>("Hud/ammobar"); }
+            }
+
+            public static Texture2D ActionSkill
+            {
+                get { return Game1.GameContent.Load<Texture2D>("Hud/actionbar"); }
+            }
+        }
+
         //Gun Imgs
         public class Gun
         {

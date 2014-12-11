@@ -44,6 +44,8 @@ namespace RoBo
         protected List<Object> objs;
         protected List<Enemy> enemies;
 
+        private List<Message> messages;
+
         public Character Character
         {
             get;
@@ -92,6 +94,8 @@ namespace RoBo
             objs = new List<Object>();
             enemies = new List<Enemy>();
 
+            messages = new List<Message>();
+
             Character = new Character();
 
             generateDungeon();
@@ -99,8 +103,22 @@ namespace RoBo
 
         public virtual void update(GameTime gameTime)
         {
-            //update or remove Objects
+            //update or remove messages
             int i = 0;
+            while (i < messages.Count)
+            {
+                if (!messages[i].IsDead)
+                    messages[i].update(gameTime);
+                else
+                {
+                    messages.RemoveAt(i);
+                    i--;
+                }
+                i += 1;
+            }
+
+            //update or remove Objects
+            i = 0;
             while (i < objs.Count)
             {
                 if (!objs[i].IsDead)
@@ -135,21 +153,26 @@ namespace RoBo
                     enemies[i].update(gameTime, this);
                 else
                 {
-                    items.Add(enemies[i].Drop);
+                    if (enemies[i].Drop != null)
+                        items.Add(enemies[i].Drop);
+
+                    int exp = Character.kill(enemies[i]);
+                    messages.Add(new Message(enemies[i].Position, "+" + exp + " Data"));
+
                     enemies.RemoveAt(i);
                     i--;
                 }
                 i += 1;
             }
 
-            //spawner(gameTime);
+            spawner(gameTime);
             Character.update(gameTime, this);
         }
 
         public virtual void draw(SpriteBatch spriteBatch)
         {
             if (Background != null)
-                spriteBatch.Draw(Background, Rec, Color.Purple);
+                //spriteBatch.Draw(Background, Rec, Color.Purple);
 
             foreach (Floor floor in floors)
                 floor.draw(spriteBatch);
@@ -161,7 +184,10 @@ namespace RoBo
                 item.draw(spriteBatch);
 
             foreach (Enemy ene in Enemies)
-                ene.draw(spriteBatch);            
+                ene.draw(spriteBatch);
+
+            foreach (Message mess in messages)
+                mess.draw(spriteBatch);   
 
             Character.draw(spriteBatch);
         }

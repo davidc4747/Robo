@@ -12,7 +12,7 @@ namespace RoBo
     public class PlasmaShot : Bullet
     {
         public PlasmaShot(Gun gun)
-            : base(Image.Bullet.Plasma, 0.03f, 2f, gun)
+            : base(Image.Bullet.Plasma, 0.03f, 1.66f, gun)
         {
         }
     }

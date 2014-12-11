@@ -9,11 +9,56 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RoBo
 {
-    public interface ICombatSprite
+    public abstract class CombatSprite : Object
     {
-        Rectangle FutureRec { get; }
-        bool IsDead { get; }
-        int Health { get; }
-        int MaxHealth { get; }
+        //Min Human : 55
+        //Max Human : 160+
+        //Avg       : 85-115
+        public int IQ
+        {
+            get;
+            protected set;
+        }
+
+        public int Exp
+        {
+            get;
+            protected set;
+        }
+
+        public int Health
+        {
+            get;
+            protected set;
+        }
+
+        public int MaxHealth
+        {
+            get;
+            protected set;
+        }
+
+        public Gun CurGun
+        {
+            get;
+            protected set;
+        }
+
+        public Rectangle FutureRec { get; protected set; }
+
+        public CombatSprite(Texture2D texture, float scaleFactor, float secondsToCrossScreen, Vector2 startPos)
+            : base(texture, scaleFactor, secondsToCrossScreen, startPos)
+        {
+        }
+
+        public virtual void damage(Object obj)
+        {
+        }
+
+        public virtual void damage(Bullet bull)
+        {
+            Health -= bull.Damage;
+        }
+
     }
 }

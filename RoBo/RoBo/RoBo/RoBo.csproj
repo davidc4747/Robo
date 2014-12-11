@@ -137,6 +137,7 @@
     <Compile Include="GunTypes\Guns\Shotgun.cs" />
     <Compile Include="Menus\Hud.cs" />
     <Compile Include="Menus\Inventory.cs" />
+    <Compile Include="Menus\Message.cs" />
     <Compile Include="Objects\Items\Item.cs" />
     <Compile Include="Objects\Items\Salvage.cs" />
     <Compile Include="Objects\Object.cs" />
@@ -146,7 +147,7 @@
     <Compile Include="Stages\Floor\Corridor.cs" />
     <Compile Include="Stages\Floor\Floor.cs" />
     <Compile Include="Stages\Floor\Room.cs" />
-    <Compile Include="Stages\MiniMap.cs" />
+    <Compile Include="Menus\MiniMap.cs" />
     <Compile Include="Stages\Stage.cs" />
     <Compile Include="Stages\Stage1.cs" />
   </ItemGroup>

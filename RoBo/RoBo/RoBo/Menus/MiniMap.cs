@@ -56,13 +56,13 @@ namespace RoBo
             float xFactor = (float)inRec.X / stage.Rec.Width;
             float yFactor = (float)inRec.Y / stage.Rec.Height;
             float widthFactor = (float)inRec.Width / stage.Rec.Width;
+            float heightFactor = (float)inRec.Height / stage.Rec.Height;
 
             newRec.X = (int)(rec.Width * xFactor + 0.5f);
             newRec.Y = (int)(rec.Height * yFactor + 0.5f);
 
             newRec.Width = (int)(rec.Width * widthFactor + 0.5f);
-            float aspectRatio = (float)inRec.Width / inRec.Height;
-            newRec.Height = (int)(newRec.Width / aspectRatio + 0.5f);
+            newRec.Height = (int)(rec.Height * heightFactor + 0.5f);
 
             newRec.Offset(rec.X, rec.Y);
             return newRec;

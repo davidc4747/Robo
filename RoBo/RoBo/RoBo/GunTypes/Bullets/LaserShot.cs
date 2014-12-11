@@ -12,7 +12,7 @@ namespace RoBo
     public class LaserShot : Bullet
     {
         public LaserShot(Gun gun)
-            : base(Image.Bullet.Laser, 0.02f, .8f, gun)
+            : base(Image.Bullet.Laser, 0.02f, .7f, gun)
         {
         }        
     }

@@ -9,29 +9,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RoBo
 {
-    public abstract class Enemy : AnimatedSprite, ICombatSprite
+    public abstract class Enemy : CombatSprite
     {
-        public Rectangle FutureRec { get; private set; }
-
-        public bool IsDead
-        {
-            get;
-            protected set;
-        }
-
-        public int Health
-        {
-            get;
-            protected set;
-        }
-
-        public int MaxHealth
-        {
-            get;
-            protected set;
-        }
-
+        
         public Item Drop
+        {
+            get;
+            protected set;
+        }
+
+        public int Strength
         {
             get;
             protected set;
@@ -63,24 +50,21 @@ namespace RoBo
             //Movement
             lookVek.Normalize();
             velocity = lookVek * Speed;
+
+            //Checks for Collision
             FutureRec = new Rectangle((int)(Position.X + velocity.X), (int)(Position.Y + velocity.Y), Rec.Width, Rec.Height);
             if (isColliding(FutureRec, Rotation, stage.Character))
                 Velocity = Vector2.Zero;
 
             Position += velocity;
-
-            //Checks for Collision
-            foreach (Bullet bull in stage.Character.CurGun.Bullets)
-                if (isColliding(bull))
-                    Health -= bull.Damage;
         }
-
 
         protected virtual void drop()
         {
+            //Select an Item to drop
             Drop = new Salvage(Position);
 
-            //Drops----
+            //---Drops---
             //Salvage
             //Ammo
             //~~Money

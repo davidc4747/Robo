@@ -26,16 +26,16 @@ namespace RoBo
         protected bool isReloading, isShooting;
         private bool isAutomatic;
 
-        public Character Character
+        public CombatSprite Holder
         {
             get;
             private set;
         }
 
-        public Bullet[] Bullets
-        {
-            get { return bulls.ToArray(); }
-        }
+        //public Bullet[] Bullets
+        //{
+        //    private get { return bulls.ToArray(); }
+        //}
         
         //Gun Stats--------------
         #region Gun Stats
@@ -139,28 +139,35 @@ namespace RoBo
             protected set;
         }
 
+        public int Pierce
+        {
+            get;
+            protected set;
+        }
+
         #endregion
 
-        public Gun(Character character,Texture2D texture, float scaleFactor, int damage, float accuracy, float reloadSpd, float fireRate, float range,
-            int ammoCap, int MagSize, int numShots = 1, bool isAutomatic = true, bool isSmallArms = true)
+        public Gun(CombatSprite holder, Texture2D texture, float scaleFactor, int damage, float accuracy, float reloadSpd, float fireRate, float range,
+            int ammoCap, int MagSize, int numShots = 1, int pierce = 1, bool isAutomatic = true, bool isSmallArms = true)
             : base(texture, scaleFactor, 10, Vector2.Zero)
         {
             if (!isSmallArms)
-                offset = new Vector2(character.Rec.Width * 0.33f, character.Rec.Height * 0.001f);
+                offset = new Vector2(holder.Rec.Width * 0.33f, holder.Rec.Height * 0.001f);
             else
-                offset = new Vector2(character.Rec.Width * 0.20f, character.Rec.Height * -0.12f);
+                offset = new Vector2(holder.Rec.Width * 0.20f, holder.Rec.Height * -0.12f);
 
-            this.Position = character.Position;
+            this.Position = holder.Position;
             muzzleFlare = new RotatingSprite(Image.Muzzle.Physical, 0.05f, 0, Vector2.Zero, this.Rotation);
             muzzleOffset = new Vector2(this.Position.X, (int)(this.Position.Y - muzzleFlare.Rec.Height * 0.28f - this.Rec.Height / 2));
 
             Name = "";
             bulls = new List<Bullet>();
-            this.Character = character;
+            this.Holder = holder;
 
             this.isAutomatic = isAutomatic;
 
             this.Damage = damage;
+            this.Pierce = pierce;
             this.NumShots = numShots;
             this.Range = range;
             this.Accuracy = accuracy;
@@ -190,7 +197,7 @@ namespace RoBo
             }
 
             //if(the gun isn't equipt) : Only update the bullets 
-            if (Character.CurGun != this)
+            if (Holder.CurGun != this)
             {
                 standBy(gameTime, stage);
                 return;
@@ -199,9 +206,9 @@ namespace RoBo
             input.start();
 
             //Recoil animation
-            Matrix myRotationMatrix = Matrix.CreateRotationZ(Character.Rotation);
+            Matrix myRotationMatrix = Matrix.CreateRotationZ(Holder.Rotation);
             Vector2 rotatedVector = Vector2.Transform(offset, myRotationMatrix);
-            Vector2 desiredVec = Character.Position + rotatedVector;           
+            Vector2 desiredVec = Holder.Position + rotatedVector;           
 
             if ((desiredVec - Position).Length() >= Rec.Width * 0.001f)
             {
@@ -211,7 +218,7 @@ namespace RoBo
             }
 
             this.Position += Velocity;
-            this.Rotation = Character.Rotation;            
+            this.Rotation = Holder.Rotation;            
 
             //if the player wants to reload
             if (input.ReloadPressed)
@@ -277,13 +284,13 @@ namespace RoBo
                 muzzleFlare.draw(spriteBatch);
 
             //Draw Ammo count
-            Vector2 ammoPos = Character.Position + new Vector2(Character.Speed * 10, Character.Speed * 10);
+            Vector2 ammoPos = Holder.Position + new Vector2(Holder.Speed * 10, Holder.Speed * 10);
             spriteBatch.DrawString(Fonts.Normal, "" + CurrMag + "/" + CurAmmo, ammoPos, Color.White);
 
             //Draw Reload time
             if (reloadTimer > 0)
             {
-                Vector2 reloadPos = Character.Position + new Vector2(-Character.Speed * 10, Character.Speed * 10);
+                Vector2 reloadPos = Holder.Position + new Vector2(-Holder.Speed * 10, Holder.Speed * 10);
                 spriteBatch.DrawString(Fonts.Normal, reloadTimer.ToString("0.0"), reloadPos, Color.Red);
             }
 
@@ -334,7 +341,7 @@ namespace RoBo
 
         protected Vector2 rotate(Vector2 displacemnet)
         {
-            Matrix myRotationMatrix = Matrix.CreateRotationZ(Character.Rotation);
+            Matrix myRotationMatrix = Matrix.CreateRotationZ(Holder.Rotation);
             Vector2 moveVec = Vector2.Transform(displacemnet, myRotationMatrix);
             return moveVec;
         }

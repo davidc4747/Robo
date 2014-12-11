@@ -112,7 +112,7 @@ namespace RoBo
             }
 
             // Shorthand condition logic
-            Speed = (secondsToCrossScreen > 0) ? (int)(inDisplayWidth / (secondsToCrossScreen * 60)) : 0;
+            Speed = (secondsToCrossScreen > 0) ? (int)(inDisplayWidth / (secondsToCrossScreen * 60.0f)) : 0;
 
             Position = startPos;
         }

@@ -33,7 +33,10 @@ namespace RoBo
             base.update(gameTime, Stage);
 
             if (isColliding(Stage.Character))
+            {
                 this.IsDead = true;
+                Stage.Character.pickUp(this);
+            }
         }
     }
 }

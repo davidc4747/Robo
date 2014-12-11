@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace RoBo
 {
-    public class Character : AnimatedSprite, ICombatSprite
+    public class Character : CombatSprite 
     {
         Input input = new Input();
 
@@ -22,33 +22,7 @@ namespace RoBo
         int gunIndex;
         Inventory invent;
         List<Gun> guns;        
-        Hud hud;
-
-        public Rectangle FutureRec { get; private set; }
-
-        public Gun CurGun
-        {
-            get;
-            private set;
-        }
-
-        public bool IsDead
-        {
-            get;
-            private set;
-        }
-
-        public int Health
-        {
-            get;
-            private set;
-        }
-
-        public int MaxHealth
-        {
-            get;
-            private set;
-        }
+        Hud hud;        
 
         public Character()
             : base(Image.Ship.Starter, 0.14f, 2.5f, Vector2.Zero)
@@ -62,11 +36,16 @@ namespace RoBo
             CurGun = guns[0]; 
             hud = new Hud(this);
             invent = new Inventory(this);
+
+            //TODO: change based on skill, upgrades, and IQ
+            Health = MaxHealth = 500;
+            IQ = 20;
         }
 
         public override void update(GameTime gameTime, IStage stage)
         {
             input.start();
+            base.update(gameTime, stage);
 
             //Calc Rotation
             mousePos.X = input.MousePos.X + Position.X - Game1.View.Width / 2;
@@ -116,11 +95,7 @@ namespace RoBo
             foreach (RotatingSprite sprite in stage.Everything)
                 if (isColliding(FutureRec, Rotation, sprite))
                     Velocity = Vector2.Zero;
-
-            foreach (Item item in stage.Items)
-                if (isColliding(item))
-                    invent.add(item);
-
+                                    
             //update aggregate classes            
             hud.update(gameTime);
             foreach (Gun gun in guns)
@@ -137,6 +112,39 @@ namespace RoBo
             hud.draw(spriteBatch);
 
             spriteBatch.Draw(Image.Particle, new Rectangle((int)mousePos.X, (int)mousePos.Y, 3, 3), Color.Red);            
+        }
+
+        public override void damage(Bullet bull)
+        {
+            if (bull.GetType().IsSubclassOf(typeof(Enemy))) 
+                base.damage(bull);
+        }
+
+        public void damage(Enemy ene)
+        {
+            Health -= ene.Strength;
+        }
+
+        public int kill(Enemy ene)
+        {
+            //Calc Exp gained
+            int expGaned = 1;
+            Exp += expGaned;
+
+            //Update level
+            int expNeeded = IQ * 100 + 2048;
+            if (Exp >= expNeeded)
+            {
+                Exp = Exp % expNeeded;
+                IQ += 2;
+            }
+            return expGaned;
+        }
+
+        public void pickUp(Item item)
+        {
+            //Send Item to appropriate class
+            invent.add(item);
         }
     }
 }

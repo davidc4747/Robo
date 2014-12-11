@@ -24,6 +24,7 @@ namespace RoBo
 
         public void draw(SpriteBatch spriteBatch)
         {
+            spriteBatch.DrawString(Fonts.Normal, character.Exp.ToString(), character.Position + new Vector2(-100, 0), Color.Green);
         }
     }
 }
