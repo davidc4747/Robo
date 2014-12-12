@@ -156,13 +156,25 @@ namespace RoBo
             Stage.showMessage(ene.Position, "+" + expGaned + " Data");
         }
 
-        public void pickUp(Item item)
+        public bool pickUp(Item item)
         {
             //Send Item to appropriate class
             if (item.GetType() == typeof(Salvage))
+            {
                 invent.add(item);
+                return true;
+            }
             else if (item.GetType() == typeof(HealthPack))
+            {
+                int oldhealth = Health;
                 Health += (int)(MaxHealth * 0.05f + 0.5f);
+                return oldhealth < MaxHealth;                
+            }
+            else if (item.GetType() == typeof(Ammo))
+            {
+                return CurGun.addAmmo((Ammo)item);
+            }
+            return true;
         }
     }
 }

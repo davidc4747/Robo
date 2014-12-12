@@ -14,7 +14,7 @@ namespace RoBo
         public HealthBar(Character character)
             : base(character, Image.Hud.HealthBar, 0.07f, Vector2.Zero, Color.Red)
         {
-            offset = new Vector2(-character.Rec.Width * 0.72f, -character.Rec.Height * 0.5f);//TODO: Set position of progressBar properly
+            offset = new Vector2(-character.Rec.Width * 0.70f, -character.Rec.Height * 0.5f);//TODO: Set position of progressBar properly
         }
 
         public override void update(GameTime gameTime, IStage stage)

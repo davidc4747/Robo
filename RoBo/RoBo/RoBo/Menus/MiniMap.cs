@@ -23,9 +23,9 @@ namespace RoBo
             rec.X = (int)(Game1.View.Width * 0.03f);
             rec.Y = (int)(Game1.View.Height * 0.03f);
 
-            rec.Width = (int)(Game1.View.Width * scaleFactor + 0.5f);
+            rec.Width = (int)(Game1.View.Width * scaleFactor);
             float aspectRatio = (float)stage.Rec.Width / stage.Rec.Height;
-            rec.Height = (int)(rec.Width / aspectRatio + 0.5f);
+            rec.Height = (int)(rec.Width / aspectRatio);
             
         }
 

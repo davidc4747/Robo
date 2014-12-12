@@ -31,7 +31,7 @@ namespace RoBo
             get;
             private set;
         }
-
+        
         //public Bullet[] Bullets
         //{
         //    private get { return bulls.ToArray(); }
@@ -46,23 +46,34 @@ namespace RoBo
             protected set;
         }
 
-        private int maxAmmo;
-        public int MaxAmmo
+        public static int[] MaxAmmoBag
         {
-            get { return maxAmmo; }
+            get;
+            protected set;
+        }
+
+        public static int[] CurAmmoBag
+        {
+            get;
+            protected set;
+        }
+
+        
+        public virtual int CurAmmo
+        {
+            get { return CurAmmoBag[(int)wepType]; }
             protected set
             {
-                maxAmmo = (value < 0) ? 0 : value;
+                CurAmmoBag[(int)wepType] = (value > MaxAmmoBag[(int)wepType]) ? MaxAmmoBag[(int)wepType] : (value < 0) ? 0 : value;
             }
         }
 
-        private int curAmmo;
-        public int CurAmmo
+        public virtual int MaxAmmo
         {
-            get { return curAmmo; }
+            get { return MaxAmmoBag[(int)wepType]; }
             protected set
             {
-                curAmmo = (value < 0) ? 0 : value;
+                MaxAmmoBag[(int)wepType] = (value < 0) ? 0 : value;
             }
         }
 
@@ -147,10 +158,15 @@ namespace RoBo
 
         #endregion
 
-        public Gun(CombatSprite holder, Texture2D texture, float scaleFactor, int damage, float accuracy, float reloadSpd, float fireRate, float range,
-            int ammoCap, int MagSize, int numShots = 1, int pierce = 1, bool isAutomatic = true, bool isSmallArms = true)
+        public Gun(CombatSprite holder, WeaponType wepType, Texture2D texture, float scaleFactor, int damage, float accuracy, float reloadSpd, float fireRate, float range,
+            int MagSize, int numShots = 1, int pierce = 1, bool isAutomatic = true)
             : base(texture, scaleFactor, 10, Vector2.Zero)
         {
+            //Gun Type : scaleFactor, ~texture, -ammoCap, -isSmallArms
+
+            this.wepType = wepType;
+
+            bool isSmallArms = wepType == WeaponType.PISTOL || wepType == WeaponType.SMG;
             if (!isSmallArms)
                 offset = new Vector2(holder.Rec.Width * 0.33f, holder.Rec.Height * 0.001f);
             else
@@ -175,7 +191,18 @@ namespace RoBo
             this.FireRate = fireRate;
             
             this.CurrMag = this.MagSize = MagSize;
-            this.CurAmmo = this.MaxAmmo = ammoCap;
+
+            CurAmmoBag = new int[Enum.GetNames(typeof(WeaponType)).Length];
+            MaxAmmoBag = new int[Enum.GetNames(typeof(WeaponType)).Length];
+
+            MaxAmmoBag[(int)WeaponType.PISTOL] = 200;
+            MaxAmmoBag[(int)WeaponType.SNIPER] = 48;
+            MaxAmmoBag[(int)WeaponType.SHOTGUN] = 80;
+            MaxAmmoBag[(int)WeaponType.SMG] = 360;
+            MaxAmmoBag[(int)WeaponType.LMG] = 420;
+            MaxAmmoBag[(int)WeaponType.ASSAULT] = 280;
+
+            CurAmmoBag = (int[])MaxAmmoBag.Clone();
 
             fireTimer = 1 / FireRate;
         }
@@ -218,8 +245,8 @@ namespace RoBo
             }
 
             this.Position += Velocity;
-            this.Rotation = Holder.Rotation;            
-
+            this.Rotation = Holder.Rotation;
+            
             //if the player wants to reload
             if (input.ReloadPressed)
             {
@@ -289,8 +316,6 @@ namespace RoBo
                 spriteBatch.DrawString(Fonts.Normal, reloadTimer.ToString("0.0"), ammoPos, Color.Red);            
             else            
                 spriteBatch.DrawString(Fonts.Normal, "" + CurrMag + "/" + CurAmmo, ammoPos, Color.White);
-            
-
 
             //Draw Gun
             base.draw(spriteBatch);
@@ -336,6 +361,21 @@ namespace RoBo
         }
 
         //------
+
+        public bool addAmmo(Ammo ammo)
+        {
+            if (ammo.Quantity < 0)
+                return false;
+
+            int oldAmmo = CurAmmoBag[(int)ammo.Type];
+            int maxAm = MaxAmmoBag[(int)ammo.Type];
+
+            CurAmmoBag[(int)ammo.Type] += ammo.Quantity;
+            if (CurAmmoBag[(int)ammo.Type] >= maxAm)            
+                CurAmmoBag[(int)ammo.Type] = maxAm;            
+
+            return oldAmmo < maxAm;
+        }
 
         protected Vector2 rotate(Vector2 displacemnet)
         {

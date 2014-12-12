@@ -10,9 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace RoBo
 {
     public abstract class Enemy : CombatSprite
-    {
-        static Random rand = new Random();
-        
+    {        
         public Item Drop
         {
             get;
@@ -68,10 +66,13 @@ namespace RoBo
         {
             //Select an Item to drop
 
-            if (rand.NextDouble() > 0.5f)
+            double randNum = rand.NextDouble();
+            if (randNum > 0.67f)
                 Drop = new HealthPack(Position);
+            else if (randNum > 0.33f)
+                Drop = new Salvage(Position);
             else
-                Drop = new Salvage(Position);            
+                Drop = new Ammo(Position);
 
             //---Drops---
             //Salvage

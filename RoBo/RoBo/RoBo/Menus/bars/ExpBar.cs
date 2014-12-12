@@ -22,7 +22,7 @@ namespace RoBo
         public void update(GameTime gameTime)
         {
             rec.Width = (int)(Game1.View.Width * (character.Exp / (float)character.MaxExp));
-            rec.Height = (int)(Game1.View.Height * 0.015f);
+            rec.Height = (int)(Game1.View.Height * 0.012f);
             rec.Y = (int)(Game1.View.Height - rec.Height);
         }
 

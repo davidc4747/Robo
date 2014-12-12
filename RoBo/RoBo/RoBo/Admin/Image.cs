@@ -116,6 +116,11 @@ namespace RoBo
             {
                 get { return Game1.GameContent.Load<Texture2D>("Testing/Pomru_FishHealth"); }
             }
+
+            public static Texture2D Ammo
+            {
+                get { return Game1.GameContent.Load<Texture2D>("Testing/Pomru_Sushi"); }
+            }
         }
 
         

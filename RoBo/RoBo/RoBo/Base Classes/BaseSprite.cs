@@ -85,7 +85,7 @@ namespace RoBo
 
             if (texture != null)
             {
-                rec.Width = (int)(inDisplayWidth * scaleFactor + 0.5f);
+                rec.Width = (int)(inDisplayWidth * ScaleFactor + 0.5f);
                 float aspectRatio = (float)texture.Width / texture.Height;
                 rec.Height = (int)(Rec.Width / aspectRatio + 0.5f);
             }

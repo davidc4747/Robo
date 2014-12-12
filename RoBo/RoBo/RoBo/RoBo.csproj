@@ -144,6 +144,7 @@
     <Compile Include="Menus\Inventory.cs" />
     <Compile Include="Menus\Message.cs" />
     <Compile Include="Menus\Progressbar.cs" />
+    <Compile Include="Objects\Items\Ammo.cs" />
     <Compile Include="Objects\Items\HealthPack.cs" />
     <Compile Include="Objects\Items\Item.cs" />
     <Compile Include="Objects\Items\Salvage.cs" />

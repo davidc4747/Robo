@@ -11,6 +11,8 @@ namespace RoBo
 {
     public abstract class Object : AnimatedSprite
     {
+        protected static Random rand = new Random();
+
         public bool IsDead
         {
             get;
