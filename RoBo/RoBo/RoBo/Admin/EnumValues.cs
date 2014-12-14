@@ -14,4 +14,9 @@ namespace RoBo
     {
         PISTOL, SHOTGUN, SNIPER, ASSAULT, SMG, LMG
     }
+
+    public enum TechType
+    {
+        HUMAN, ROBOT, ALIEN
+    }
 }

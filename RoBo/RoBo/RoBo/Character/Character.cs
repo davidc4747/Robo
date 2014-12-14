@@ -79,11 +79,12 @@ namespace RoBo
             if (CurGun != guns[gunIndex])
             {
                 isSwaping = true;
+                CurGun = null;
                 swapTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 if (swapTimer >= 0.3f)
                 {
-                    CurGun.Clear();
                     CurGun = guns[gunIndex];
+                    CurGun.Clear();
                     swapTimer = 0;
                     isSwaping = false;
                 }
@@ -121,8 +122,8 @@ namespace RoBo
 
         public override void draw(SpriteBatch spriteBatch)
         {
-            if (!isSwaping)
-                CurGun.draw(spriteBatch);
+            foreach (Gun gun in guns)
+                gun.draw(spriteBatch);
             base.draw(spriteBatch);
             hud.draw(spriteBatch);
 
@@ -131,7 +132,7 @@ namespace RoBo
 
         public override void damage(Bullet bull)
         {
-            if (bull.GetType().IsSubclassOf(typeof(Enemy))) 
+            if (bull.GetType().IsSubclassOf(typeof(Enemy)))//TODO: What???
                 base.damage(bull);
         }
 
@@ -162,7 +163,6 @@ namespace RoBo
             if (item.GetType() == typeof(Salvage))
             {
                 invent.add(item);
-                return true;
             }
             else if (item.GetType() == typeof(HealthPack))
             {
@@ -172,7 +172,25 @@ namespace RoBo
             }
             else if (item.GetType() == typeof(Ammo))
             {
+                if (CurGun == null)
+                    return false;
                 return CurGun.addAmmo((Ammo)item);
+            }
+            else if (item.GetType() == typeof(GunItem))
+            {
+                GunItem gun = (GunItem)item;
+                switch (gun.TechType)
+                {
+                    case TechType.HUMAN:
+                        guns.Add(new PhysicalGun(this, gun.GunShell));
+                        break;
+                    case TechType.ALIEN:
+                        guns.Add(new PlasmaGun(this, gun.GunShell));
+                        break;
+                    case TechType.ROBOT:
+                        guns.Add(new LaserGun(this, gun.GunShell));
+                        break;
+                }
             }
             return true;
         }

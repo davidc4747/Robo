@@ -26,21 +26,27 @@ namespace RoBo
             switch (Type)
             {
                 case WeaponType.PISTOL:
+                    //TODO: change img
                     Name += "Pistol ";
                     break;
                 case WeaponType.SHOTGUN:
+                    //change img
                     Name += "Shotgun ";
                     break;
                 case WeaponType.SNIPER:
+                    //change img
                     Name += "Sniper ";
                     break;
                 case WeaponType.ASSAULT:
+                    //change img
                     Name += "Assault ";
                     break;
                 case WeaponType.SMG:
+                    //change img
                     Name += "SMG ";
                     break;
                 case WeaponType.LMG:
+                    //change img
                     Name += "LMG ";
                     break;
             }

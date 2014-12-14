@@ -95,7 +95,7 @@ namespace RoBo
         public override void draw(SpriteBatch spriteBatch)
         {
             base.draw(spriteBatch);
-            spriteBatch.Draw(texture, rec2, color);
+            spriteBatch.Draw(Texture, rec2, color);
             //spriteBatch.Draw(this.Texture, this.Rec, this.Rec, this.color, 0, Vector2.Zero, SpriteEffects.None, 0);
         }
     }

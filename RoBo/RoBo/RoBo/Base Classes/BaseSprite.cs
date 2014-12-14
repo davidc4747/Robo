@@ -12,7 +12,7 @@ namespace RoBo
     //This class used to draw an image on the screen
     public class BaseSprite
     {
-        protected Texture2D texture;
+        private Texture2D texture;
         protected Color color;
 
         protected Vector2 velocity;
@@ -106,7 +106,7 @@ namespace RoBo
 
             if (texture != null)
             {
-                rec.Width = (int)(inDisplayWidth * scaleFactor + 0.5f);
+                rec.Width = (int)(inDisplayWidth * ScaleFactor + 0.5f);
                 float aspectRatio = (float)texture.Width / texture.Height;
                 rec.Height = (int)(Rec.Width / aspectRatio + 0.5f);
             }
@@ -125,6 +125,29 @@ namespace RoBo
         {
             if (IsVisible)
                 spriteBatch.Draw(texture, Rec, color);
+        }
+
+        //Rescales the sprite when it's texture is changed
+        protected virtual void changeTexture(Texture2D tex, float scaleFactor)
+        {
+            this.texture = tex;
+            if (tex != null)
+            {
+                rec.Width = (int)(Game1.View.Width * scaleFactor + 0.5f);
+                float aspectRatio = (float)tex.Width / tex.Height;
+                rec.Height = (int)(Rec.Width / aspectRatio + 0.5f);
+            }
+            ScaleFactor = scaleFactor;
+        }
+
+        protected void changeTexture(Texture2D tex)
+        {
+            this.changeTexture(tex, ScaleFactor);
+        }
+
+        protected void rescale(float scaleFactor)
+        {
+            changeTexture(this.texture, scaleFactor);
         }
 
 

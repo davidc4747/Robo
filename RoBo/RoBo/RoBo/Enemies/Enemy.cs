@@ -38,7 +38,7 @@ namespace RoBo
                 IsDead = true;
                 IsVisible = false;
                 //Drop Item
-                drop();
+                setDrop();
                 return;
             }
 
@@ -62,17 +62,19 @@ namespace RoBo
             Position += velocity;
         }
 
-        protected virtual void drop()
+        protected virtual void setDrop()
         {
             //Select an Item to drop
 
             double randNum = rand.NextDouble();
-            if (randNum > 0.67f)
+            if (randNum > 0.75f)
                 Drop = new HealthPack(Position);
-            else if (randNum > 0.33f)
+            else if (randNum > 0.65f)
                 Drop = new Salvage(Position);
-            else
+            else if (randNum > 0.40f)
                 Drop = new Ammo(Position);
+            else
+                Drop = new GunItem(Position, this);
 
             //---Drops---
             //Salvage

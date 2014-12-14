@@ -47,14 +47,50 @@ namespace RoBo
         //Gun Imgs
         public class Gun
         {
-            public static Texture2D PhysPistol
+            public class Physical
             {
-                get { return Game1.GameContent.Load<Texture2D>("Guns/bulletpistol"); }
+                public static Texture2D Pistol
+                {
+                    get { return Game1.GameContent.Load<Texture2D>("Guns/bulletpistol"); }
+                }
+
+                public static Texture2D Shotgun
+                {
+                    get { return Game1.GameContent.Load<Texture2D>("Guns/bulletpistol"); }
+                }
+
+                public static Texture2D Sniper
+                {
+                    get { return Game1.GameContent.Load<Texture2D>("Testing/crap guns/sniper"); }
+                }
+
+                public static Texture2D Assault
+                {
+                    get { return Game1.GameContent.Load<Texture2D>("Testing/crap guns/assault"); }
+                }
+
+                public static Texture2D LMG
+                {
+                    get { return Game1.GameContent.Load<Texture2D>("Testing/crap guns/LMG"); }
+                }
+
+                public static Texture2D SMG
+                {
+                    get { return Game1.GameContent.Load<Texture2D>("Testing/crap guns/SMG"); }
+                }
+
             }
 
-            public static Texture2D LasPistol
+            public class Laser
             {
-                get { return Game1.GameContent.Load<Texture2D>("Guns/lasergun"); }
+                public static Texture2D Pistol
+                {
+                    get { return Game1.GameContent.Load<Texture2D>("Guns/lasergun"); }
+                }
+            }
+
+            public class Plasma
+            {
             }
         }
 

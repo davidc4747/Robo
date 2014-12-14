@@ -117,7 +117,7 @@
     <Compile Include="Base Classes\Animation\Animation.cs" />
     <Compile Include="Base Classes\Animation\Frame.cs" />
     <Compile Include="Base Classes\BaseSprite.cs" />
-    <Compile Include="Base Classes\Character.cs" />
+    <Compile Include="Character\Character.cs" />
     <Compile Include="Base Classes\CombatSprite.cs" />
     <Compile Include="Base Classes\RotatingSprite.cs" />
     <Compile Include="GunTypes\Bullets\LaserShot.cs" />
@@ -141,10 +141,11 @@
     <Compile Include="Menus\bars\HealthBar.cs" />
     <Compile Include="Menus\Hud.cs" />
     <Compile Include="Menus\TracerHud.cs" />
-    <Compile Include="Menus\Inventory.cs" />
+    <Compile Include="Character\Inventory.cs" />
     <Compile Include="Menus\Message.cs" />
-    <Compile Include="Menus\Progressbar.cs" />
+    <Compile Include="Menus\bars\Progressbar.cs" />
     <Compile Include="Objects\Items\Ammo.cs" />
+    <Compile Include="Objects\Items\GunItem.cs" />
     <Compile Include="Objects\Items\HealthPack.cs" />
     <Compile Include="Objects\Items\Item.cs" />
     <Compile Include="Objects\Items\Salvage.cs" />

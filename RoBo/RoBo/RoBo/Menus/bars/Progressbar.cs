@@ -48,8 +48,8 @@ namespace RoBo
         {
             base.draw(spriteBatch);
 
-            float scale = rec.Width / (float)texture.Width;
-            spriteBatch.Draw(texture, new Vector2(rec.X + (int)cropDisplace.X, rec.Y + (int)cropDisplace.Y), cropRec, topColor, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+            float scale = rec.Width / (float)Texture.Width;
+            spriteBatch.Draw(Texture, new Vector2(rec.X + (int)cropDisplace.X, rec.Y + (int)cropDisplace.Y), cropRec, topColor, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
         }
     }
 }

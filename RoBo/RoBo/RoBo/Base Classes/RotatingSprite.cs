@@ -34,10 +34,17 @@ namespace RoBo
         public override void draw(SpriteBatch spriteBatch)
         {
             if (IsVisible)
-                spriteBatch.Draw(texture, rec, null, color, Rotation, origin, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Texture, rec, null, color, Rotation, origin, SpriteEffects.None, 0f);
 
             foreach (Vector2 corner in getCorners(this))
                 spriteBatch.Draw(Image.Particle, new Rectangle((int)corner.X, (int)corner.Y, 1, 1), color);
+        }
+
+        protected sealed override void changeTexture(Texture2D tex, float scaleFactor)
+        {
+            base.changeTexture(tex, scaleFactor);
+            origin.X = Texture.Width / 2;
+            origin.Y = Texture.Height / 2;
         }
 
         public bool isColliding(Rectangle inRec, float rotation, RotatingSprite obj)

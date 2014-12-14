@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RoBo
 {
-    public abstract class LaserGun : Gun
+    public class LaserGun : Gun
     {
         private float reGenTimer = 0;
 
@@ -33,9 +33,14 @@ namespace RoBo
             }
         }
 
-        public LaserGun(Character character, WeaponType wepType, Texture2D texture, float scaleFactor, int damage, float accuracy, float reloadSpd, float fireRate, float range,
+        public LaserGun(Character holder, GunStats gunShell)
+            : base(holder, gunShell)
+        {
+        }
+
+        public LaserGun(Character character, WeaponType wepType, int iq, int damage, float accuracy, float reloadSpd, float fireRate, float range,
             int MagSize, int numShots = 1, int pierce = 1, bool isAutomatic = true)
-            : base(character, wepType, texture, scaleFactor, damage, accuracy, reloadSpd, fireRate, range, MagSize, numShots, pierce, isAutomatic)
+            : base(character, wepType, iq, damage, accuracy, reloadSpd, fireRate, range, MagSize, numShots, pierce, isAutomatic)
         {
             muzzleFlare = new RotatingSprite(Image.Muzzle.Laser, 0.05f, 0, Vector2.Zero, this.Rotation);
             muzzleOffset = new Vector2(0, (int)(-muzzleFlare.Rec.Height * 0.28f - this.Rec.Height / 2));
@@ -50,7 +55,7 @@ namespace RoBo
             this.idle(gameTime, stage);
         }
 
-        protected override void idle(GameTime gameTime, IStage stage)
+        protected override void idle(GameTime gameTime, IStage stage)//TODO: laser gun builds damage
         {
             base.idle(gameTime, stage);
 

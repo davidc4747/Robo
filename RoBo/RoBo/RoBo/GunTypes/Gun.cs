@@ -10,8 +10,35 @@ using Microsoft.Xna.Framework.Input;
 
 namespace RoBo
 {
+
+    //Data holder used to initialize a new Gun object
+    public struct GunStats
+    {
+        public WeaponType wepType;
+        public int iq, damage, magSize, numShots, pierce;
+        public float accuracy, reloadSpd, fireRate, range;
+        public bool isAutomatic;
+
+        public GunStats(WeaponType wepType, int iq, int damage, float accuracy, float reloadSpd, float fireRate, float range,
+            int magSize, int numShots = 1, int pierce = 1, bool isAutomatic = true)
+        {
+            this.iq = iq;
+            this.wepType = wepType;
+            this.damage = damage;
+            this.accuracy = accuracy;
+            this.reloadSpd = reloadSpd;
+            this.fireRate = fireRate;
+            this.range = range;
+            this.magSize = magSize;
+            this.numShots = numShots;
+            this.pierce = pierce;
+            this.isAutomatic = isAutomatic;
+        }
+    }
+
     public abstract class Gun : RotatingSprite
     {
+        private static Random rand = new Random();
         Input input = new Input();
         WeaponType wepType;
 
@@ -26,21 +53,22 @@ namespace RoBo
         protected bool isReloading, isShooting;
         private bool isAutomatic;
 
-        public CombatSprite Holder
+        public Character Holder
         {
             get;
             private set;
         }
         
-        //public Bullet[] Bullets
-        //{
-        //    private get { return bulls.ToArray(); }
-        //}
-        
         //Gun Stats--------------
         #region Gun Stats
 
         public string Name
+        {
+            get;
+            protected set;
+        }
+
+        public int IQ
         {
             get;
             protected set;
@@ -158,13 +186,42 @@ namespace RoBo
 
         #endregion
 
-        public Gun(CombatSprite holder, WeaponType wepType, Texture2D texture, float scaleFactor, int damage, float accuracy, float reloadSpd, float fireRate, float range,
-            int MagSize, int numShots = 1, int pierce = 1, bool isAutomatic = true)
-            : base(texture, scaleFactor, 10, Vector2.Zero)
+        static Gun()
         {
-            //Gun Type : scaleFactor, ~texture, -ammoCap, -isSmallArms
+            CurAmmoBag = new int[Enum.GetNames(typeof(WeaponType)).Length];
+            MaxAmmoBag = new int[Enum.GetNames(typeof(WeaponType)).Length];
 
+            MaxAmmoBag[(int)WeaponType.PISTOL] = 200;
+            MaxAmmoBag[(int)WeaponType.SNIPER] = 48;
+            MaxAmmoBag[(int)WeaponType.SHOTGUN] = 80;
+            MaxAmmoBag[(int)WeaponType.SMG] = 360;
+            MaxAmmoBag[(int)WeaponType.LMG] = 420;
+            MaxAmmoBag[(int)WeaponType.ASSAULT] = 280;
+
+            CurAmmoBag = (int[])MaxAmmoBag.Clone();
+        }
+
+        public Gun(Character holder, GunStats gunShell)
+            : base(Image.Gun.Laser.Pistol, 0, 10, Vector2.Zero)
+        {
+            init(holder, gunShell.wepType, gunShell.iq, gunShell.damage, gunShell.accuracy, gunShell.reloadSpd, gunShell.fireRate,
+                gunShell.range, gunShell.magSize, gunShell.numShots, gunShell.pierce, gunShell.isAutomatic);
+        }
+
+
+        public Gun(Character holder, WeaponType wepType, int iq, int damage, float accuracy, float reloadSpd, float fireRate, float range,
+            int magSize, int numShots = 1, int pierce = 1, bool isAutomatic = true)
+            : base(Image.Gun.Laser.Pistol, 0, 10, Vector2.Zero)
+        {
+            init(holder, wepType, iq, damage, accuracy, reloadSpd, fireRate, range, magSize, numShots, pierce, isAutomatic);
+        }
+
+        private void init(Character holder, WeaponType wepType, int iq, int damage, float accuracy, float reloadSpd, float fireRate, float range,
+            int magSize, int numShots = 1, int pierce = 1, bool isAutomatic = true)
+        {
+            this.IQ = iq;
             this.wepType = wepType;
+            setImage();
 
             bool isSmallArms = wepType == WeaponType.PISTOL || wepType == WeaponType.SMG;
             if (!isSmallArms)
@@ -189,20 +246,8 @@ namespace RoBo
             this.Accuracy = accuracy;
             this.ReloadSpd = reloadSpd;
             this.FireRate = fireRate;
-            
-            this.CurrMag = this.MagSize = MagSize;
 
-            CurAmmoBag = new int[Enum.GetNames(typeof(WeaponType)).Length];
-            MaxAmmoBag = new int[Enum.GetNames(typeof(WeaponType)).Length];
-
-            MaxAmmoBag[(int)WeaponType.PISTOL] = 200;
-            MaxAmmoBag[(int)WeaponType.SNIPER] = 48;
-            MaxAmmoBag[(int)WeaponType.SHOTGUN] = 80;
-            MaxAmmoBag[(int)WeaponType.SMG] = 360;
-            MaxAmmoBag[(int)WeaponType.LMG] = 420;
-            MaxAmmoBag[(int)WeaponType.ASSAULT] = 280;
-
-            CurAmmoBag = (int[])MaxAmmoBag.Clone();
+            this.CurrMag = this.MagSize = magSize;
 
             fireTimer = 1 / FireRate;
         }
@@ -223,7 +268,7 @@ namespace RoBo
                 i += 1;
             }
 
-            //if(the gun isn't equipt) : Only update the bullets 
+            //if(this gun isn't equipt) : Only update the bullets 
             if (Holder.CurGun != this)
             {
                 standBy(gameTime, stage);
@@ -289,8 +334,7 @@ namespace RoBo
                 isReloading = false;
 
             if (!isReloading && !isShooting)
-                idle(gameTime, stage);
-                       
+                idle(gameTime, stage);                       
 
             input.end();
         }
@@ -300,6 +344,10 @@ namespace RoBo
             //Draw bullets
             foreach (Bullet bull in bulls)
                 bull.draw(spriteBatch);
+
+            //if(this gun isn't equipt) : only draw the bullets
+            if (Holder.CurGun != this)
+                return;            
 
             //Draw Muzzle flare
             Matrix myRotationMatrix = Matrix.CreateRotationZ(this.Rotation);
@@ -395,6 +443,66 @@ namespace RoBo
             isShooting = false;
             fireTimer = 0;
             reloadTimer = 0;
+        }
+        
+        private void setImage()
+        {
+            if (this.GetType() == typeof(PhysicalGun) || this.GetType().IsSubclassOf(typeof(PhysicalGun)))
+            {
+                switch (wepType)
+                {
+                    case WeaponType.PISTOL:
+                        this.changeTexture(Image.Gun.Physical.Pistol, 0.019f);
+                        break;
+                    case WeaponType.SHOTGUN:
+                        this.changeTexture(Image.Gun.Physical.Shotgun, 0.025f);
+                        break;
+                    case WeaponType.SNIPER:
+                        this.changeTexture(Image.Gun.Physical.Sniper, 0.025f);
+                        break;
+                    case WeaponType.ASSAULT:
+                        this.changeTexture(Image.Gun.Physical.Assault, 0.025f);
+                        break;
+                    case WeaponType.SMG:
+                        this.changeTexture(Image.Gun.Physical.SMG, 0.019f);
+                        break;
+                    case WeaponType.LMG:
+                        this.changeTexture(Image.Gun.Physical.LMG, 0.025f);
+                        break;
+                }
+            }
+            else if (this.GetType() == typeof(PlasmaGun) || this.GetType().IsSubclassOf(typeof(PlasmaGun)))
+            {
+                switch (wepType)
+                {
+                    case WeaponType.PISTOL:
+                        this.changeTexture(Image.Gun.Physical.Pistol, 0.019f);
+                        break;
+                    case WeaponType.SHOTGUN:
+                    case WeaponType.SNIPER:
+                    case WeaponType.ASSAULT:
+                    case WeaponType.SMG:
+                    case WeaponType.LMG:
+                        this.changeTexture(Image.Gun.Physical.Pistol, 0.001f);
+                        break;
+                }
+            }
+            else if (this.GetType() == typeof(LaserGun) || this.GetType().IsSubclassOf(typeof(LaserGun)))
+            {
+                switch (wepType)
+                {
+                    case WeaponType.PISTOL:
+                        this.changeTexture(Image.Gun.Laser.Pistol, 0.019f);
+                        break;
+                    case WeaponType.SHOTGUN:
+                    case WeaponType.SNIPER:
+                    case WeaponType.ASSAULT:
+                    case WeaponType.SMG:
+                    case WeaponType.LMG:
+                        this.changeTexture(Image.Gun.Laser.Pistol, 0.001f);
+                        break;
+                }
+            }
         }
 
     }

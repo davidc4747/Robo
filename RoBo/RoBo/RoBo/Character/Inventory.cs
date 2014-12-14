@@ -44,7 +44,23 @@ namespace RoBo
 
         public void add(Item item)
         {
-            HumSalvage++;
+            if (item.GetType() == typeof(Salvage))
+            {
+                Salvage salv = (Salvage)item;
+                switch (salv.TechType)
+                {
+                    case TechType.HUMAN:
+                        HumSalvage += salv.Quantity;
+                        break;
+                    case TechType.ALIEN:
+                        AliSalvage += salv.Quantity;
+                        break;
+                    case TechType.ROBOT:
+                        RoboSalvage += salv.Quantity;
+                        break;
+                }
+            }
+
         }
     }
 }

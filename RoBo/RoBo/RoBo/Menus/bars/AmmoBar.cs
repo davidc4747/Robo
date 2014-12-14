@@ -20,12 +20,15 @@ namespace RoBo
         public override void update(GameTime gameTime, IStage stage)
         {
             //Set Percent
-            Percent = character.CurGun.CurrMag / (float)character.CurGun.MagSize;
+            if (character.CurGun == null)
+                Percent = 0;
+            else
+                Percent = character.CurGun.CurrMag / (float)character.CurGun.MagSize;
 
             //scale cropRec
-            cropRec.Width = texture.Width;
-            cropRec.Y = (int)(texture.Height * (1 - Percent));
-            cropRec.Height = (int)(texture.Height * Percent);
+            cropRec.Width = Texture.Width;
+            cropRec.Y = (int)(Texture.Height * (1 - Percent));
+            cropRec.Height = (int)(Texture.Height * Percent);
 
             cropDisplace.Y = rec.Height * (1 - Percent);
 
