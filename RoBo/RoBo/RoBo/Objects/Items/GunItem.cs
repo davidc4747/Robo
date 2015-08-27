@@ -52,6 +52,9 @@ namespace RoBo
 
         public void genPhysicalGun(int iq)
         {
+            int damage = 0, magSize = 0, numShots = 0, pierce = 0;
+            float accuracy = 0, reloadSpd = 0, fireRate = 0, range = 0, DPS = 0;
+            bool isAutomatic = false;
             switch (WepType)
             {
                 case WeaponType.PISTOL:
@@ -60,10 +63,20 @@ namespace RoBo
                 case WeaponType.ASSAULT:
                 case WeaponType.SMG:
                 case WeaponType.LMG:
+                    range = 230;
+                    DPS = (float)(150 * (iq / 20.0f) * rand.NextDouble() + 12 * iq);    //range * 2?
+                    fireRate = (float)(12 * rand.NextDouble() + 5);
+                    damage = (int)(DPS / fireRate);                                     //change damage to float??
+
+
+
+
                     this.changeTexture(Image.Gun.Physical.Pistol, 0.017f);
-                    GunShell = new GunStats(WepType, iq, 10, .8f, .5f, 20, 300, 60, 2, 3);
+                    //GunShell = new GunStats(WepType, iq, 10, .8f, .5f, 20, 300, 60, 2, 3);
                     break;
             }
+
+            GunShell = new GunStats(WepType, iq, damage, accuracy, reloadSpd, fireRate, range, magSize, numShots, pierce, isAutomatic);
         }
 
         public void genLaserGun()

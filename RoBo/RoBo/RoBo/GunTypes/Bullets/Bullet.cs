@@ -80,6 +80,7 @@ namespace RoBo
                         objCollided.Add(obj);
                         hitObject(obj);
                         Pierce--;
+                        Damage = Damage + inAccGen.Next(-Damage / 5, 1);
                         if (Pierce <= 0)
                             Enabled = false;
                         break;

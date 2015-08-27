@@ -23,11 +23,11 @@ namespace RoBo
             protected set;
         }
 
-        public Enemy(Texture2D texture, float scaleFactor, float secondsToCrossScreen, Vector2 startPos, int maxHealth)
+        public Enemy(Texture2D texture, float scaleFactor, float secondsToCrossScreen, Vector2 startPos, int iq)
             : base(texture, scaleFactor, secondsToCrossScreen, startPos)
         {
-            //TODO: Changed based on IQ
-            Health = MaxHealth = maxHealth;
+            IQ = iq;
+            Health = MaxHealth = 1;
             Strength = 1;
         }
 
@@ -73,7 +73,7 @@ namespace RoBo
                 Drop = new Salvage(Position);
             else if (randNum > 0.40f)
                 Drop = new Ammo(Position);
-            else
+            else if (randNum > 0.30f)
                 Drop = new GunItem(Position, this);
 
             //---Drops---

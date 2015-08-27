@@ -8,7 +8,7 @@ namespace RoBo
     public class PlasmaPistol : PlasmaGun
     {
         public PlasmaPistol(Character character)
-            : base(character, WeaponType.PISTOL, 0, 8, 0.78f, 0.64f, 17, 170, 64)
+            : base(character, WeaponType.PISTOL, 0, 24, 0.78f, 0.64f, 17, 170, 64)
         {
         }
     }

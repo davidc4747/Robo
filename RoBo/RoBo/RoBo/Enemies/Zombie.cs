@@ -12,8 +12,10 @@ namespace RoBo
     public class Zombie : Enemy
     {
         public Zombie(Vector2 startPos)
-            : base(Image.Enemy.Zombie, 0.11f, 3f, startPos, 200)
+            : base(Image.Enemy.Zombie, 0.11f, 3f, startPos, 20)
         {
+            Health = MaxHealth = 16 * IQ + 128;
+            Strength = 1;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace RoBo
     public class Pistol : PhysicalGun
     {
         public Pistol(Character character)
-            : base(character, WeaponType.PISTOL, 0, 4, 0.8f, 0.6f, 20, 230, 64)
+            : base(character, WeaponType.PISTOL, 0, 12, 0.8f, 0.6f, 20, 230, 64)
         {
         }
     }

@@ -21,7 +21,7 @@ namespace RoBo
             : base(Image.Object.Salvage, 0.037f, startPos)
         {
             TechType = (TechType)rand.Next(Enum.GetNames(typeof(TechType)).Length);
-            Quantity = rand.Next(31);
+            Quantity = rand.Next(31) + 1;
 
             Name = "";
             switch (TechType)
